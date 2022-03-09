@@ -3,7 +3,7 @@ rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
     def index
         users = User.all
-        render json: users, status: 200
+        render json: users, status: 200, each_serializer: UserDetailSerializer
     end
 
     def show
@@ -16,6 +16,6 @@ rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
     private
 
     def record_not_found
-        render json: {name: "unauthorized"}, status: 404
+        render json: {name: "Unauthorized"}, status: 404
     end
 end

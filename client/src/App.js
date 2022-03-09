@@ -3,6 +3,7 @@ import { Routes, Route, Link } from 'react-router'
 import { useState, useEffect } from 'react' 
 import Navbar from './components/Navbar'
 import Signup from './pages/Signup'
+import Social from './pages/Social'
 import Home from './pages/Home'
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
     <Router >
       <Navbar user={user} handleLogout={handleLogout}/>
       <Routes>
+        <Route path="/social" element={<Social currentUser={user}/>}/>
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Home user={user} handleSetUser={setUser} handleLogout={handleLogout}/>}/>
       </Routes>

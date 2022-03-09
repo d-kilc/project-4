@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import * as React from 'react';
+import { Link } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -57,38 +58,44 @@ function Navbar({user, handleLogout}) {
 
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                 <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                color="inherit"
+                    size="large"
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleOpenNavMenu}
+                    color="inherit"
                 >
-                <MenuIcon />
+                    <MenuIcon />
                 </IconButton>
                 <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                keepMounted
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{
-                    display: { xs: 'block', md: 'none' },
-                }}
+                    id="menu-appbar"
+                    anchorEl={anchorElNav}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                    open={Boolean(anchorElNav)}
+                    onClose={handleCloseNavMenu}
+                    sx={{
+                        display: { xs: 'block', md: 'none' },
+                    }}
                 >
-                {pages.map((page) => (
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>
-                ))}
+                    {pages.map((page) => {
+                        const url = page !== 'My Items' ? `/${page.toLowerCase().replace(' ','_')}` : '/'
+
+                        return (
+                            <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                <Link to={url}>
+                                    <Typography textAlign="center">{page}</Typography>
+                                </Link>
+                            </MenuItem>
+                        )
+                    })}
                 </Menu>
             </Box>
             <Typography
@@ -100,23 +107,26 @@ function Navbar({user, handleLogout}) {
                 [App Name]
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                {pages.map((page) => (
-                <Button
-                    key={page}
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                    {page}
-                </Button>
-                ))}
+                {pages.map((page) => {
+                    const url = page !== 'My Items' ? `/${page.toLowerCase().replace(' ','_')}` : '/'
+                    return ( 
+                        <Button
+                            key={page}
+                            onClick={handleCloseNavMenu}
+                            sx={{ my: 2, color: 'white', display: 'block' }}
+                        >
+                            <Link to={url}>{page}</Link>
+                        </Button>
+                    ) 
+                })}
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar src="/static/images/avatar/2.jpg" />
+                {/* <Avatar src="/static/images/avatar/2.jpg" /> */}
                     {/* "Cant read properties of undefined, reading user"  */}
-                    {/* <Avatar alt={user.username} src="/static/images/avatar/2.jpg" /> */}
+                    <Avatar alt={user && user.username} src="/static/images/avatar/2.jpg" />
                 </IconButton>
                 </Tooltip>
                 <Menu

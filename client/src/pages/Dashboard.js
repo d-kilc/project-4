@@ -10,7 +10,7 @@ export default function Dashboard({user, handleLogout}) {
             <ItemList user = {user}/>
         </div>
         <div>
-            <ItemTable />
+            <ItemTable user={user}/>
         </div>
         </>
     )

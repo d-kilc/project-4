@@ -1,14 +1,29 @@
-puts 'Planting users...'
+puts 'Planting data...'
 dan = User.create username: "dan", password: "test"
-freddy = User.create username: "freddy", password: "test12"
-puts 'Done planting users.'
+freddy = User.create username: "freddy", password: "test"
 
-puts 'Planting items...'
-mac = Item.create name: "Macbook Pro", original_cost: 1500, brand: "Apple", year_manufactured: 2020, description: "laptop"
-ski_pass = Item.create name: "Ski rentals and lift ticket", original_cost: 120, brand: "Devil's Head Resort", year_manufactured: 2022, description: "skiing"
-puts 'Done planting items.'
+50.times do
+    name = Faker::Name.unique.first_name.downcase
+    User.create username: name, password: 'test'
 
-puts 'Planting user items...'
-UserItem.create notes: "bought in summer 2020", user_id: dan.id, item_id: mac.id, usage_frequency: 500, item_type: "Frequency"
-UserItem.create notes: "skiing on 2/26", user_id: dan.id, item_id: ski_pass.id, usage_frequency: 25, item_type: "Frequency"
-puts 'Done planting user items items.'
+    5.times do
+        product_name = Faker::Commerce.product_name
+        price = Faker::Commerce.price
+        brand = Faker::Commerce.brand
+        desc = Faker::Commerce.material
+        Item.create name: product_name, original_cost: price, brand: brand, year_manufactured: 2018, description: desc
+    end
+
+end
+
+User.all.each do |user|
+    3.times do
+        notes = Faker::Quote.famous_last_words
+        usage_frequency = rand 1..100
+        item = Item.find(rand 1..250)
+
+        user_item = UserItem.create notes: notes, item_type: "Frequency", usage_frequency: usage_frequency, item: item, user: user
+    end
+end
+
+puts 'Done planting data.'
