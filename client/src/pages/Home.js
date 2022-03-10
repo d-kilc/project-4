@@ -7,7 +7,6 @@ export default function Home({user, handleSetUser, handleLogout}) {
 
     return (
         <div>
-            <h1>Home</h1>
             { user && user.name !== "Unauthorized" ? <Dashboard user={user} handleLogout={handleLogout}/> : <h1></h1>}
         </div>
     )

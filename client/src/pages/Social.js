@@ -1,5 +1,6 @@
 import ItemTable from '../components/ItemTable'
-import { Grid, Button } from '@mui/material'
+import { Grid, Button, TextField, Typography } from '@mui/material'
+import UserSearch from '../components/UserSearch'
 import { useState, useEffect } from 'react'
 export default function Social({currentUser}) {
     
@@ -8,10 +9,17 @@ export default function Social({currentUser}) {
 
     useEffect(() => {
         fetch('/users')
-        .then(res => res.json())
-        // .then(console.log)
-        .then(setUsers)
-        .catch(err => alert('There was a problem fetching users: ' + err))
+        .then(res => {
+            if (res.ok) {
+                res.json().then(data => {
+                    setUsers(data)
+                })
+            } else {
+                res.json().then(data => {
+                    alert('There was a problem fetching users.')
+                })
+            }
+        })
     }, [])
 
     useEffect(() => {
@@ -28,10 +36,17 @@ export default function Social({currentUser}) {
                 followed_id: parseInt(followed_id)
             })
         })
-        .then(res => res.json())
-        // .then(console.log)
-        .then(fetchFollowing)
-        .catch(err => alert('There was a problem following the user: ' + err))
+        .then(res => {
+            if (res.ok) {
+                res.json().then(data => {
+                    fetchFollowing()
+                })
+            } else {
+                res.json().then(data => {
+                    alert('There was a problem following the user: ' + data.errors)
+                })
+            }
+        })
     }
 
     function handleUnfollowUser(follower_id, unfollowed_id) {
@@ -39,7 +54,7 @@ export default function Social({currentUser}) {
             method: 'DELETE'
         })
         .then(fetchFollowing)
-        .catch(err => alert('There was a problem unfollowing the user: ' + err))
+        .catch(err => alert('There was a problem unfollowing the user.'))
     }
 
     function fetchFollowing() {
@@ -57,29 +72,25 @@ export default function Social({currentUser}) {
     if (!users) return <></>
 
     return (
-        <>
-        <h1>Social</h1>
-        <h3>All users</h3>
-        <Grid container spacing={2} justifyContent="space-evenly">
-            {users.map(user => {
-                if (user.id === currentUser.id) return <></>
-
+        <div className="container">
+            <Grid container justifyContent="space-between" alignItems="center">
+                <Typography variant="h2" my={4}>Social</Typography>
+                <UserSearch currentUser={currentUser} users={users} following={following} isFollowing={isFollowing} handleFollowUser={handleFollowUser} handleUnfollowUser={handleUnfollowUser}/>
+            </Grid>
+            <Typography variant="h4" my={4}>Your friends</Typography>
+            {following && following.map(user => {
                 return (
-                    <Grid container xs={5} md={4} direction="row" alignItems="center" justifyContent="space-between">
-                        <Grid item >{user.username}</Grid>
-                        <Grid item>
-                            {isFollowing(user) ? (
-                                <Button variant="outlined" color="error" onClick={() => handleUnfollowUser(currentUser.id, user.id)}>Unfollow</Button>
-                            ) : (
-                                <Button variant="outlined" color="success" onClick={() => handleFollowUser(currentUser.id, user.id)}>Follow</Button>
-                            )}
-                        </Grid>
-
-                    </Grid>
+                    <>
+                    <Typography variant="h6" my={4}>{user.username}</Typography>
+                    <ItemTable user={user} /> 
+                    </>
                 )
             })}
-        </Grid>
-        {following && following.map(user => <ItemTable user={user} />)}
-        </>
+            {following.length === 0 ? (
+                <Grid container sx={{height: '40%'}} justifyContent="center" alignItems="center">
+                <Typography variant="h6">Looks like you're not following anyone. Follow other users to get started.</Typography>
+                </Grid>
+            ) : <></>}
+        </div>
     )
 }

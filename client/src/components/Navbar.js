@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import * as React from 'react';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,16 +15,16 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 
 const pages = ['My Items', 'Social'];
-const settings = ['Logout'];
 
 function Navbar({user, handleLogout}) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [loading, setLoading] = useState(true)
+//   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate('/')
 
-  useEffect(() => {
-      setLoading(false)
-  }, [user])
+//   useEffect(() => {
+//       setLoading(false)
+//   }, [user])
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -42,13 +42,13 @@ function Navbar({user, handleLogout}) {
     setAnchorElUser(null);
   }
 
-  if (!loading) { 
+  if (user) { 
     return (
         <AppBar position="static">
-        <Container maxWidth="xl">
+        <Container maxWidth="false">
             <Toolbar disableGutters>
             <Typography
-                variant="h6"
+                variant="h4"
                 noWrap
                 component="div"
                 sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
@@ -85,7 +85,7 @@ function Navbar({user, handleLogout}) {
                         display: { xs: 'block', md: 'none' },
                     }}
                 >
-                    {pages.map((page) => {
+                    {user.name !== "Unauthorized" && pages.map((page) => {
                         const url = page !== 'My Items' ? `/${page.toLowerCase().replace(' ','_')}` : '/'
 
                         return (
@@ -99,7 +99,7 @@ function Navbar({user, handleLogout}) {
                 </Menu>
             </Box>
             <Typography
-                variant="h6"
+                variant="h4"
                 noWrap
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
@@ -107,7 +107,7 @@ function Navbar({user, handleLogout}) {
                 [App Name]
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                {pages.map((page) => {
+                {user.name !== "Unauthorized" && pages.map((page) => {
                     const url = page !== 'My Items' ? `/${page.toLowerCase().replace(' ','_')}` : '/'
                     return ( 
                         <Button
@@ -145,11 +145,13 @@ function Navbar({user, handleLogout}) {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
                 >
-                {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleLogout}>
-                    <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                ))}
+                <MenuItem onClick={() => {
+                    handleLogout()
+                    navigate('/')
+                }}>
+                    <Typography textAlign="center">Logout</Typography>
+                </MenuItem>
+
                 </Menu>
             </Box>
             </Toolbar>

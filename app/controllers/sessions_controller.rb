@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
             render json: user, status: 200, serializer: UserDetailSerializer
         else
             # byebug
-            render json: { name: 'Unauthorized' }, status: 401
+            render json: { error: "Invalid credentials.", name: 'Unauthorized' }, status: 401
         end
     end
 

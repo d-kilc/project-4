@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -16,12 +16,12 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
+import Incrementor from './Incrementor';
 
 import UseInput from './UseInput'
 
 
-
-function createData(name, ppu, numberOfUses, original_cost, year_manufactured, description,) {
+function createData(name, ppu, numberOfUses, original_cost, year_manufactured, description, id) {
   return {
     name,
     ppu,
@@ -29,6 +29,7 @@ function createData(name, ppu, numberOfUses, original_cost, year_manufactured, d
     original_cost,
     year_manufactured,
     description,
+    id
     // history: [
     //   {
     //     date: '2020-01-05',
@@ -44,15 +45,120 @@ function createData(name, ppu, numberOfUses, original_cost, year_manufactured, d
   };
 }
 
+
+
+function deleteItemUser(user){
+  // console.log(user.row.name)
+  console.log(user.row.id)
+}
+
+
+
+
+
+// Row.propTypes = {
+//   row: PropTypes.shape({
+//     calories: PropTypes.number.isRequired,
+//     carbs: PropTypes.number.isRequired,
+//     fat: PropTypes.number.isRequired,
+//     // history: PropTypes.arrayOf(
+//     //   PropTypes.shape({
+//     //     amount: PropTypes.number.isRequired,
+//     //     customerId: PropTypes.string.isRequired,
+//     //     date: PropTypes.string.isRequired,
+//     //   }),
+//     // ).isRequired,
+//     name: PropTypes.string.isRequired,
+//     price: PropTypes.number.isRequired,
+//     protein: PropTypes.number.isRequired,
+//   }).isRequired,
+// };
+
+const currencies = [
+  {
+    value: 'Uses',
+    label: 'Total Uses',
+  },
+  {
+    value: 'Minutes',
+    label: 'Minutes',
+  },
+  {
+    value: 'Days',
+    label: 'Days',
+  },
+  {
+    value: 'Months',
+    label: 'Months',
+  },
+];
+
+export default function ItemTable({user}) {
+  const [loading, setLoading] = useState(true)
+  const [tickerValue, setTickerValue] = useState(0)
+  useEffect(() => {
+      setLoading(false)
+  }, [user])
+
+
+    // createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
+    // createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
+    // createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
+if(!loading){
+    let rows = user.user_items.map((U_I) => {
+      return(
+        createData(
+          `${U_I.item.name}`, 
+          `${(U_I.item.original_cost / U_I.usage_frequency  ).toFixed(2)}`,
+          `${U_I.usage_frequency}`,
+          `${U_I.item.original_cost.toFixed(2)}`,
+          `${U_I.item.year_manufactured}`,
+          `${U_I.item.description}`,
+          `${U_I.item.id}`
+      ))
+      })
+  return (
+    <TableContainer component={Paper}>
+      <Table aria-label="collapsible table">
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            <TableCell>Item Name</TableCell>
+            <TableCell align="right">Price per use</TableCell>
+            <TableCell align="right">Number of uses</TableCell>
+            <TableCell align="right">Initial price</TableCell>
+            <TableCell align="right">Year manufactured</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <Row tickerValue={tickerValue} setTickerValue={setTickerValue} key={row.name} row={row} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  )
+}
+return(
+  <></>
+)
+
+}
 function Row(props) {
+
+  useEffect(() =>{
+    console.log(props.tickerValue)
+
+  },[props.tickerValue])
+
   const { row } = props;
   const [open, setOpen] = useState(false);
 
   const [currency, setCurrency] = useState('Uses');
-
   const handleChange = (event) => {
     setCurrency(event.target.value);
   };
+  
 
   return (
     <React.Fragment>
@@ -118,8 +224,8 @@ function Row(props) {
                     <TableCell>
                       <UseInput row={row}/>
                     </TableCell>
-                    <TableCell align="right">
-                      {row.numberOfUses}
+                    <TableCell>
+                      <Incrementor row={row}/>
                     </TableCell>
                     <TableCell align="right">
                       <button>
@@ -130,7 +236,7 @@ function Row(props) {
                       <button> Archive</button>  
                     </TableCell>
                     <TableCell align="right">
-                            <button>Delete</button>
+                            <button onClick={() => deleteItemUser({row})}>Delete</button>
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -155,82 +261,4 @@ function Row(props) {
       </TableRow>
     </React.Fragment>
   );
-}
-
-// Row.propTypes = {
-//   row: PropTypes.shape({
-//     calories: PropTypes.number.isRequired,
-//     carbs: PropTypes.number.isRequired,
-//     fat: PropTypes.number.isRequired,
-//     // history: PropTypes.arrayOf(
-//     //   PropTypes.shape({
-//     //     amount: PropTypes.number.isRequired,
-//     //     customerId: PropTypes.string.isRequired,
-//     //     date: PropTypes.string.isRequired,
-//     //   }),
-//     // ).isRequired,
-//     name: PropTypes.string.isRequired,
-//     price: PropTypes.number.isRequired,
-//     protein: PropTypes.number.isRequired,
-//   }).isRequired,
-// };
-
-const currencies = [
-  {
-    value: 'Uses',
-    label: 'Total Uses',
-  },
-  {
-    value: 'Minutes',
-    label: 'Minutes',
-  },
-  {
-    value: 'Days',
-    label: 'Days',
-  },
-  {
-    value: 'Months',
-    label: 'Months',
-  },
-];
-
-export default function ItemTable({user}) {
-
-
-    let rows = user.user_items.map((U_I) => {
-      return(
-        createData(
-          `${U_I.item.name}`, 
-          `${(U_I.item.original_cost / U_I.usage_frequency  ).toFixed(2)}`,
-          `${U_I.usage_frequency}`,
-          `${U_I.item.original_cost.toFixed(2)}`,
-          `${U_I.item.year_manufactured}`,
-          `${U_I.item.description}`
-      ))
-      })
-    // createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-    // createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-    // createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-
-  return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>Item Name</TableCell>
-            <TableCell align="right">Price per use</TableCell>
-            <TableCell align="right">Number of uses</TableCell>
-            <TableCell align="right">Initial price</TableCell>
-            <TableCell align="right">Year manufactured</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  )
 }

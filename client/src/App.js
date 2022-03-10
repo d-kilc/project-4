@@ -9,8 +9,6 @@ import Home from './pages/Home'
 function App() {
   const [ user, setUser ] = useState()
 
-  console.log(user)
-
   useEffect(() => {
     fetch('/me')
     .then(res => res.json())
@@ -20,7 +18,9 @@ function App() {
   function handleLogout() {
     fetch('/logout', { method: 'DELETE'})
     .then(res => res.json())
-    .then(setUser)
+    .then(data => {
+      setUser(data)
+    })
   }
 
   return (
@@ -28,7 +28,7 @@ function App() {
       <Navbar user={user} handleLogout={handleLogout}/>
       <Routes>
         <Route path="/social" element={<Social currentUser={user}/>}/>
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/signup" element={<Signup handleSetUser={setUser}/>} />
         <Route path="/" element={<Home user={user} handleSetUser={setUser} handleLogout={handleLogout}/>}/>
       </Routes>
     </Router>

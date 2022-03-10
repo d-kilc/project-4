@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import { TextField, Button, Grid, Typography } from '@mui/material'
 export default function Login({handleSetUser}) {
 
     const [ formData, setFormData ] = useState({
@@ -17,35 +18,40 @@ export default function Login({handleSetUser}) {
             headers: { "Content-Type": "application/json", accept: 'application/json'},
             body: JSON.stringify(formData)
         })
-        .then(res => res.json())
-        .then(handleSetUser)
+        .then(res => {
+            if (res.ok) {
+                res.json().then(data => {
+                    handleSetUser(data)
+                })
+            } else {
+                res.json().then(data => {
+                    alert(data.error)
+                })
+            }
+        })
     }
 
     return (
-        <div>
-            <h1>Login</h1>
-            <table>
-                <tr>
-                    <td>
-                        <label>Username: </label>
-                    </td>
-                    <td>
-                        <input name="username" value={formData.username} onChange={handleUpdateInput}/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>Password: </label>
-                    </td>
-                    <td>
-                        <input type="password" name="password" value={formData.password} onChange={handleUpdateInput}/>
-                    </td>
-                </tr>
-            </table>
-            <button onClick={() => handleLogin()}>
-                Login
-            </button>
-            <div><Link to="/signup">Sign up</Link></div>
+        <div className="container">
+            <Grid container xs={'auto'} spacing={2} direction={'column'} alignItems='center' justifyContent="center" margin="auto">
+                <Grid item alignSelf="center">
+                    <Typography variant="h4">Login</Typography>
+                </Grid>
+                <Grid item xs={1}>
+                    <TextField label="Username" name="username" value={formData.username} onChange={handleUpdateInput}/>
+                </Grid>
+                <Grid item>
+                    <TextField label="Password" type="password" name="password" value={formData.password} onChange={handleUpdateInput}/>
+                </Grid>
+                <Grid item >
+                    <Button variant="contained" onClick={() => handleLogin()}>
+                        Log In
+                    </Button>
+                    <Button variant="text">
+                        <Link to="/signup">Sign up</Link>
+                    </Button>
+                </Grid >
+            </Grid>
 
         </div>
     )
