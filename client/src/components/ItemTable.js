@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -30,49 +31,8 @@ function createData(name, ppu, numberOfUses, original_cost, year_manufactured, d
     year_manufactured,
     description,
     id
-    // history: [
-    //   {
-    //     date: '2020-01-05',
-    //     customerId: '11091700',
-    //     amount: 3,
-    //   },
-    //   {
-    //     date: '2020-01-02',
-    //     customerId: 'Anonymous',
-    //     amount: 1,
-    //   },
-    // ],
   };
 }
-
-
-
-function deleteItemUser(user){
-  // console.log(user.row.name)
-  console.log(user.row.id)
-}
-
-
-
-
-
-// Row.propTypes = {
-//   row: PropTypes.shape({
-//     calories: PropTypes.number.isRequired,
-//     carbs: PropTypes.number.isRequired,
-//     fat: PropTypes.number.isRequired,
-//     // history: PropTypes.arrayOf(
-//     //   PropTypes.shape({
-//     //     amount: PropTypes.number.isRequired,
-//     //     customerId: PropTypes.string.isRequired,
-//     //     date: PropTypes.string.isRequired,
-//     //   }),
-//     // ).isRequired,
-//     name: PropTypes.string.isRequired,
-//     price: PropTypes.number.isRequired,
-//     protein: PropTypes.number.isRequired,
-//   }).isRequired,
-// };
 
 const currencies = [
   {
@@ -90,22 +50,19 @@ const currencies = [
   {
     value: 'Months',
     label: 'Months',
-  },
-];
+  },  
+];  
 
 export default function ItemTable({user}) {
   const [loading, setLoading] = useState(true)
   const [tickerValue, setTickerValue] = useState(0)
+
   useEffect(() => {
       setLoading(false)
   }, [user])
 
-
-    // createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-    // createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-    // createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
 if(!loading){
-    let rows = user.user_items.map((U_I) => {
+    let rows = user && user.user_items.map((U_I) => {
       return(
         createData(
           `${U_I.item.name}`, 
@@ -115,8 +72,9 @@ if(!loading){
           `${U_I.item.year_manufactured}`,
           `${U_I.item.description}`,
           `${U_I.item.id}`
-      ))
-      })
+        )
+      )
+    })
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -138,27 +96,50 @@ if(!loading){
       </Table>
     </TableContainer>
   )
-}
-return(
-  <></>
-)
+} else return <></>
 
 }
+
 function Row(props) {
+  
+  function saveClick(){
+    console.log(incrementorValue)
+    console.log(inputValue)
+    console.log("save me")
+    
+    const config = {
+      headers: {"Content-Type": "application/json"},
+      method: "PATCH",
+      body: JSON.stringify({
+        notes: inputValue,
+        usage_frequency: incrementorValue
+      })
+    }
+    fetch(`/user_items/${props.row.id}`, config)
+    .then(r => r.json())
+    .then((data) => console.log(data))
+    window.location.reload()
+  }
 
-  useEffect(() =>{
-    console.log(props.tickerValue)
-
-  },[props.tickerValue])
-
+  const [incrementorValue, setIncrementorValue] = useState(0)
+  const [inputValue, setInputValue] = useState("")
   const { row } = props;
   const [open, setOpen] = useState(false);
 
   const [currency, setCurrency] = useState('Uses');
-  const handleChange = (event) => {
-    setCurrency(event.target.value);
-  };
   
+  function handleChange(event) {
+    setCurrency(event.target.value);
+  }
+
+  function deleteItemUser(user){
+    console.log(user.row.id)
+
+    fetch(`/user_item/${props.row.id}`, {method: "DELETE"})
+    .then(res => res.json())
+
+    window.location.reload()
+  }
 
   return (
     <React.Fragment>
@@ -193,39 +174,17 @@ function Row(props) {
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    {/* <TableCell>
-                    <Box
-                      component="form"
-                      sx={{
-                        '& .MuiTextField-root': { m: 1, width: '25ch' },
-                       }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                       <div>
-                        <TextField
-                          id="outlined-select-currency"
-                          select
-                          label="Select"
-                          value={currency}
-                          onChange={handleChange}
-                          helperText="Please select your currency"
-                        >
-                          {currencies.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.label}
-                          </MenuItem>
-                          ))}
-                        </TextField>
-                        </div>
-                      </Box>
-
-                    </TableCell> */}
                     <TableCell>
-                      <UseInput row={row}/>
+                      <UseInput inputValue={inputValue} setInputValue={setInputValue} row={row}/>
                     </TableCell>
                     <TableCell>
-                      <Incrementor row={row}/>
+                      <Incrementor setIncrementorValue={setIncrementorValue} incrementorValue={incrementorValue} row={row}/>
+                    </TableCell>
+                    <TableCell>
+                    <h3>Save your updated data!</h3>
+                      <button onClick={() => saveClick()}>
+                        save
+                      </button>
                     </TableCell>
                     <TableCell align="right">
                       <button>
@@ -233,26 +192,18 @@ function Row(props) {
                       </button>
                     </TableCell>
                     <TableCell align="right">
-                      <button> Archive</button>  
+                      <Link to={`/user-items/${row.id}`} state={{userItemId: row.id}}>
+                        <button>
+                          Details
+                        </button>  
+                      </Link>
                     </TableCell>
                     <TableCell align="right">
-                            <button onClick={() => deleteItemUser({row})}>Delete</button>
+                      <button onClick={() => deleteItemUser({row})}>Delete</button>
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {/* // {row.history.map((historyRow) => ( */}
-                  {/* //   <TableRow key={historyRow.date}>
-                  //     <TableCell component="th" scope="row">
-                  //       {historyRow.date}
-                  //     </TableCell>
-                  //     <TableCell>{historyRow.customerId}</TableCell>
-                  //     <TableCell align="right">{historyRow.amount}</TableCell>
-                  //     <TableCell align="right">
-                  //       {Math.round(historyRow.amount * row.price * 100) / 100}
-                  //     </TableCell>
-                  //   </TableRow>
-                  // ))} */}
                 </TableBody>
               </Table>
             </Box>

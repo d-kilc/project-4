@@ -1,11 +1,7 @@
-import {useState, useEffect} from 'react'
+import {useEffect} from 'react'
 
 
-export default function Incrementor ({row}) {
-
-    const [incrementorValue, setIncrementorValue] = useState(0)
-    console.log(incrementorValue)
-
+export default function Incrementor ({row, setIncrementorValue, incrementorValue}) {
     useEffect(() => {
         setIncrementorValue(row.numberOfUses)
     },[])
@@ -22,5 +18,4 @@ export default function Incrementor ({row}) {
         onChange={(e) => handleChange(e)}
         />
     )
-    // <input value={props.tickerValue} type="number"/>
 }

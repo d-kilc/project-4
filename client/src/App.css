@@ -11,3 +11,8 @@
   align-items: center;
   padding: 5px;
 }
+
+.unstyled-link {
+  text-decoration: none;
+  color: black;
+}

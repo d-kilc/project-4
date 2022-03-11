@@ -14,12 +14,12 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 
-const pages = ['My Items', 'Social'];
+const pages = ['My Items', 'New Item', 'Social'];
 
 function Navbar({user, handleLogout}) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-//   const [loading, setLoading] = useState(true)
+
   const navigate = useNavigate('/')
 
 //   useEffect(() => {
@@ -53,7 +53,7 @@ function Navbar({user, handleLogout}) {
                 component="div"
                 sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
             >
-                [App Name]
+                Item Tracker
             </Typography>
 
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -86,11 +86,11 @@ function Navbar({user, handleLogout}) {
                     }}
                 >
                     {user.name !== "Unauthorized" && pages.map((page) => {
-                        const url = page !== 'My Items' ? `/${page.toLowerCase().replace(' ','_')}` : '/'
+                        const url = page !== 'My Items' ? `/${page.toLowerCase().replace(' ','-')}` : '/'
 
                         return (
                             <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                <Link to={url}>
+                                <Link className="unstyled-link" to={url}>
                                     <Typography textAlign="center">{page}</Typography>
                                 </Link>
                             </MenuItem>
@@ -104,18 +104,18 @@ function Navbar({user, handleLogout}) {
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
             >
-                [App Name]
+                Item Tracker
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                 {user.name !== "Unauthorized" && pages.map((page) => {
-                    const url = page !== 'My Items' ? `/${page.toLowerCase().replace(' ','_')}` : '/'
+                    const url = page !== 'My Items' ? `/${page.toLowerCase().replace(' ','-')}` : '/'
                     return ( 
                         <Button
                             key={page}
                             onClick={handleCloseNavMenu}
                             sx={{ my: 2, color: 'white', display: 'block' }}
                         >
-                            <Link to={url}>{page}</Link>
+                            <Link className="unstyled-link" to={url}>{page}</Link>
                         </Button>
                     ) 
                 })}
@@ -145,13 +145,17 @@ function Navbar({user, handleLogout}) {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
                 >
+                <MenuItem onClick={() => {}}>
+                    <Link className="unstyled-link" style={{color: 'black'}} to="/edit-user">
+                        <Typography textAlign="center">Edit user</Typography>
+                    </Link>
+                </MenuItem>
                 <MenuItem onClick={() => {
                     handleLogout()
                     navigate('/')
                 }}>
                     <Typography textAlign="center">Logout</Typography>
                 </MenuItem>
-
                 </Menu>
             </Box>
             </Toolbar>

@@ -1,5 +1,5 @@
 class UserItemsController < ApplicationController
-skip_before_action :verify_authenticity_token
+# skip_before_action :verify_authenticity_token
 rescue_from ActiveRecord::RecordInvalid, with: :invalid_record
     
     def index

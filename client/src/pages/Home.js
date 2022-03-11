@@ -1,9 +1,9 @@
 import Dashboard from './Dashboard'
 import Login from './Login'
 
-export default function Home({user, handleSetUser, handleLogout}) {
+export default function Home({user, handleSetUser, handleLogin, handleLogout}) {
     
-    if (user && user.name === "Unauthorized") return <Login handleSetUser={handleSetUser}/>
+    if (user && user.name === "Unauthorized") return <Login handleLogin={handleLogin} handleSetUser={handleSetUser}/>
 
     return (
         <div>

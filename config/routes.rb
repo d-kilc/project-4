@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :follows
-  # resources :user_items
+  resources :user_items, only: [:create, :show]
   resources :items, only: [ :index, :show, :create, :update, :destroy ]
   resources :users, only: [ :index, :show, :create, :update, :destroy ] do
     resources :user_items, only: [ :index, :create, :show, :update, :destroy ]

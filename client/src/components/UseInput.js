@@ -1,16 +1,21 @@
-import {useState, useEffect} from 'react';
+import {useEffect} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
-export default function UseInput({row}) {
-  const [value, setValue] = useState(row.description);
+export default function UseInput({inputValue, setInputValue, row}) {
+
+  
   const handleChange = (event) => {
-    setValue(event.target.value);
+    setInputValue(event.target.value);
+    // console.log(inputValue)
+    console.log(event.target.value)
   };
 
+
 useEffect(() => {
-  console.log(value)
-},[value])
+  setInputValue(row.description)
+
+},[])
 
   return (
     <Box
@@ -27,7 +32,7 @@ useEffect(() => {
           id="standard-multiline-static"
           multiline
           rows={4}
-          defaultValue={value}
+          defaultValue={inputValue}
           onChange={(e) => handleChange(e)}
           variant="standard"
         />
