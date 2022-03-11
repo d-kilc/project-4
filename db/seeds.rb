@@ -11,7 +11,8 @@ freddy = User.create username: "freddy", password: "test"
         price = Faker::Commerce.price
         brand = Faker::Commerce.brand
         desc = Faker::Commerce.material
-        Item.create name: product_name, original_cost: price, brand: brand, year_manufactured: 2018, description: desc
+        img = Faker::LoremFlickr.image(size: '300x300', search_terms: ['items'])
+        Item.create name: product_name, original_cost: price, brand: brand, year_manufactured: 2018, description: desc, image_url: img
     end
 
 end

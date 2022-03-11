@@ -4,6 +4,12 @@
 
 }
 
+.details-container {
+  margin: 10px auto;
+  height: 100vh;
+  max-width: 700px;
+}
+
 .user-search-result {
   width: 100%;
   display: flex;
@@ -15,4 +21,9 @@
 .unstyled-link {
   text-decoration: none;
   color: black;
+}
+
+img {
+  border-radius: 10px;
+  object-fit: cover;
 }

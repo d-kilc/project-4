@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import Navbar from './components/Navbar'
 import Signup from './pages/Signup'
 import NewItem from './pages/NewItem'
-import EditUser from './pages/EditUser'
 import ItemDetails from './pages/ItemDetail'
 import Social from './pages/Social'
 import Home from './pages/Home'
@@ -47,6 +46,7 @@ function App() {
   }
 
   function handleCreateItem(item, userItem) {
+      console.log('HCI',item )
     fetch(`/items`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -55,6 +55,7 @@ function App() {
     .then(res => {
         if (res.ok) {
             res.json().then(data => {
+                console.log(data)
                 handleCreateUserItem(userItem, data.id)
             })
         } else {
@@ -64,10 +65,11 @@ function App() {
         }
     })
 }
+console.log(user)
 
 function handleCreateUserItem(item, itemId) {
     const newItem = {...item, item_id: itemId, usage_frequency: 0, }
-
+console.log('HCUI', newItem)
     fetch('/user_items', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -76,8 +78,12 @@ function handleCreateUserItem(item, itemId) {
     .then(res => {
         if (res.ok) {
             res.json().then(data => {
+                console.log(data)
                 alert('Item created!')
-                setUser({...user, user_items: [...user.user_items, newItem]})
+                const newUserItems = [...user.user_items]
+                newUserItems.push(newItem)
+                console.log(newUserItems)
+                setUser({...user, user_items: [...newUserItems]})
             })
         } else {
             res.json().then(data => {
@@ -94,7 +100,6 @@ function handleCreateUserItem(item, itemId) {
         <Route path='/new-item' element={<NewItem user={user} handleCreateItem={handleCreateItem}/>}/>
         <Route path="/social" element={<Social currentUser={user}/>}/>
         <Route path="/signup" element={<Signup handleSetUser={setUser}/>} />
-        <Route path='/edit-user' element={<EditUser/>}/>
         <Route path={`/user-items/:id`} element={<ItemDetails/>}/>
         <Route path="/" element={<Home user={user} handleLogin={handleLogin} handleSetUser={setUser} handleLogout={handleLogout}/>}/>
       </Routes>

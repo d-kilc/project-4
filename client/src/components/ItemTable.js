@@ -16,13 +16,14 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TextField from '@mui/material/TextField';
+import { Button } from '@mui/material'
 import MenuItem from '@mui/material/MenuItem';
 import Incrementor from './Incrementor';
 
 import UseInput from './UseInput'
 
 
-function createData(name, ppu, numberOfUses, original_cost, year_manufactured, description, id) {
+function createData(name, ppu, numberOfUses, original_cost, year_manufactured, description, id, userItemId) {
   return {
     name,
     ppu,
@@ -30,7 +31,9 @@ function createData(name, ppu, numberOfUses, original_cost, year_manufactured, d
     original_cost,
     year_manufactured,
     description,
-    id
+    id,
+    
+    userItemId
   };
 }
 
@@ -56,22 +59,24 @@ const currencies = [
 export default function ItemTable({user}) {
   const [loading, setLoading] = useState(true)
   const [tickerValue, setTickerValue] = useState(0)
-
+console.log(user)
   useEffect(() => {
       setLoading(false)
   }, [user])
 
+  
 if(!loading){
     let rows = user && user.user_items.map((U_I) => {
       return(
         createData(
           `${U_I.item.name}`, 
-          `${(U_I.item.original_cost / U_I.usage_frequency  ).toFixed(2)}`,
+          `$${(U_I.item.original_cost / U_I.usage_frequency  ).toFixed(2)}`,
           `${U_I.usage_frequency}`,
-          `${U_I.item.original_cost.toFixed(2)}`,
+          `$${U_I.item.original_cost.toFixed(2)}`,
           `${U_I.item.year_manufactured}`,
           `${U_I.item.description}`,
-          `${U_I.item.id}`
+          `${U_I.item.id}`,
+          U_I.id
         )
       )
     })
@@ -103,10 +108,6 @@ if(!loading){
 function Row(props) {
   
   function saveClick(){
-    console.log(incrementorValue)
-    console.log(inputValue)
-    console.log("save me")
-    
     const config = {
       headers: {"Content-Type": "application/json"},
       method: "PATCH",
@@ -115,7 +116,7 @@ function Row(props) {
         usage_frequency: incrementorValue
       })
     }
-    fetch(`/user_items/${props.row.id}`, config)
+    fetch(`/user_items/${props.row.userItemId}`, config)
     .then(r => r.json())
     .then((data) => console.log(data))
     window.location.reload()
@@ -132,10 +133,10 @@ function Row(props) {
     setCurrency(event.target.value);
   }
 
-  function deleteItemUser(user){
-    console.log(user.row.id)
+  function deleteItemUser(id){
+    console.log(id)
 
-    fetch(`/user_item/${props.row.id}`, {method: "DELETE"})
+    fetch(`/user_items/${id}`, {method: "DELETE"})
     .then(res => res.json())
 
     window.location.reload()
@@ -168,9 +169,7 @@ function Row(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                For your custom page!
-              </Typography>
+              <Typography variant="h6">Notes</Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
@@ -181,25 +180,24 @@ function Row(props) {
                       <Incrementor setIncrementorValue={setIncrementorValue} incrementorValue={incrementorValue} row={row}/>
                     </TableCell>
                     <TableCell>
-                    <h3>Save your updated data!</h3>
-                      <button onClick={() => saveClick()}>
+                      <Button onClick={() => saveClick()}>
                         save
-                      </button>
+                      </Button>
                     </TableCell>
                     <TableCell align="right">
-                      <button>
+                      <Button>
                         New
-                      </button>
+                      </Button>
                     </TableCell>
                     <TableCell align="right">
-                      <Link to={`/user-items/${row.id}`} state={{userItemId: row.id}}>
-                        <button>
+                      <Link style={{textDecoration: 'none'}} to={`/user-items/${row.userItemId}`} state={{userItemId: row.userItemId}}>
+                        <Button>
                           Details
-                        </button>  
+                        </Button>  
                       </Link>
                     </TableCell>
                     <TableCell align="right">
-                      <button onClick={() => deleteItemUser({row})}>Delete</button>
+                      <Button onClick={() => deleteItemUser(row.userItemId)}>Delete</Button>
                     </TableCell>
                   </TableRow>
                 </TableHead>

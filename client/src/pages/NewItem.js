@@ -59,7 +59,7 @@ export default function NewItem({user, handleCreateItem}) {
             </Grid>
             <Typography variant="h5" my={4}>Ownership details</Typography>
             <Grid container spacing={2} mb={2}>
-                <Grid item xs={8} display="flex" alignItems="center">
+                {/* <Grid item xs={8} display="flex" alignItems="center">
                     <Typography textAlign="center">Is usage of this item tracked by <strong>frequency</strong> (# of times used) or <strong>time</strong> (amount of time used)?</Typography>
                 </Grid>
                 <Grid item xs={4}>
@@ -68,7 +68,7 @@ export default function NewItem({user, handleCreateItem}) {
                         <MenuItem value={'Frequency'}>Frequency</MenuItem>
                         <MenuItem value={'Time'}>Time</MenuItem>
                     </Select>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12}>
                     <TextField label="Notes" name="notes" value={userItemData.notes} onChange={handleUpdateUserItemData} multiline rows={4} fullWidth ></TextField>
                 </Grid>

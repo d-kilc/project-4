@@ -126,7 +126,7 @@ function Navbar({user, handleLogout}) {
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 {/* <Avatar src="/static/images/avatar/2.jpg" /> */}
                     {/* "Cant read properties of undefined, reading user"  */}
-                    <Avatar alt={user && user.username} src="/static/images/avatar/2.jpg" />
+                    <Avatar alt={user && user.username} src="./static/images/avatar/2.jpg" />
                 </IconButton>
                 </Tooltip>
                 <Menu
@@ -145,11 +145,6 @@ function Navbar({user, handleLogout}) {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
                 >
-                <MenuItem onClick={() => {}}>
-                    <Link className="unstyled-link" style={{color: 'black'}} to="/edit-user">
-                        <Typography textAlign="center">Edit user</Typography>
-                    </Link>
-                </MenuItem>
                 <MenuItem onClick={() => {
                     handleLogout()
                     navigate('/')
